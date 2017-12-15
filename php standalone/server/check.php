@@ -6,14 +6,14 @@
 	/* Connect to database and grab the keys */
 	require( "config.php" );
 	$query = "SELECT `key` FROM `keys`";
-	$result = mysql_query($query);
-	$num=mysql_numrows($result);
+	$result = mysqli_query($connectdb, $query);
+	$num=$result->num_rows;
 
 	/* Set up a loop to check if requested key is found in database */
 	$i=0;
 	while ($i < $num) {
 
-		$validationkey = mysql_result($result,$i,"key");
+		$validationkey = $result->fetch_assoc()["key"];
 
 			if ($validationkey == $key) {
 				$validation = "Success";
@@ -28,6 +28,3 @@
 	} else {
 		echo 'INVALID';
 	}
-
-
-?>

@@ -9,7 +9,7 @@
 
 		require( "config.php" );
 		$query = "INSERT INTO `keys` VALUES ('','" . $addkey . "')";
-		mysql_query($query);
+		mysqli_query($connectdb, $query);
 
 		header('Location: admin.php');
 ?>

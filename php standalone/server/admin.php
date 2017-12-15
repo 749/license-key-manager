@@ -61,7 +61,7 @@ if(!isset($_COOKIE['keymanagementauth'])){
 		$connectdb;
 		$selectdb;
 		$query = 'DELETE FROM `keys` WHERE id=' . $deleteid;
-		mysql_query($query);
+		mysqli_query($connectdb, $query);
 
 		header('Location: admin.php?mode=view');
 }
@@ -78,8 +78,8 @@ if(!isset($_COOKIE['keymanagementauth'])){
 		$connectdb;
 		$selectdb;
 		$query = "SELECT * FROM `keys` WHERE `key` LIKE '%" . $s . "%'";
-		$result = mysql_query($query);
-		$num=mysql_numrows($result);
+		$result = mysqli_query($connectdb, $query);
+		$num=$result->num_rows || 0;
 
 
 		echo '<div style="background:#cccccc;margin-top:-10px;margin-bottom:30px;height:30px;">
@@ -108,24 +108,24 @@ if(!isset($_COOKIE['keymanagementauth'])){
 				echo "</table><table><th>License Key</th><th></th>";
 				$tablebreaker = 0;
 			}
-			
-			$keys = mysql_result($result,$i,"key");
-			$id = mysql_result($result,$i,"id");
+            $result->data_seek($i);
+
+			$row = $result->fetch_assoc();
 
 			echo '<tr class="tablerow"><td>';
-			echo $keys;
+			echo $row['key'];
 			echo '</td><td>';
-			echo '<a href="?mode=delete&id=' . $id . '">[X]</a>';
+			echo '<a href="?mode=delete&id=' . $row['id'] . '">[X]</a>';
 			echo '</td></tr>';
 			$i++;
 			$tablebreaker++;
 
-	
+
 			}
-		
-		
+
+
 		echo '</table></div>';
-		
+
 }
 
 if ($mode == "view") {
@@ -137,8 +137,8 @@ if(!isset($_COOKIE['keymanagementauth'])){
 		$connectdb;
 		$selectdb;
 		$query = "SELECT * FROM `keys`";
-		$result = mysql_query($query);
-		$num=mysql_numrows($result);
+		$result = mysqli_query($connectdb, $query);
+		$num=$result->num_rows || 0;
 
 		echo '<div style="background:#cccccc;margin-top:-10px;margin-bottom:30px;height:30px;">
 <div style="padding-left:5px;padding-top:3px;">Product Key Management Server</div>
@@ -161,20 +161,21 @@ if(!isset($_COOKIE['keymanagementauth'])){
 		$tablebreaker = 0;
 
 		while ($i < $num) {
-			
-			if ($tablebreaker == "10") {
+
+			if ($tablebreaker == 10) {
 				echo "</table><table><th>License Key</th><th></th>";
 				$tablebreaker = 0;
 			}
-			
-			$keys = mysql_result($result,$i,"key");
-			$id = mysql_result($result,$i,"id");
 
-			echo '<tr class="tablerow"><td>';
-			echo $keys;
-			echo '</td><td>';
-			echo '<a href="?mode=delete&id=' . $id . '">[X]</a>';
-			echo '</td></tr>';
+            $result->data_seek($i);
+
+            $row = $result->fetch_assoc();
+
+            echo '<tr class="tablerow"><td>';
+            echo $row['key'];
+            echo '</td><td>';
+            echo '<a href="?mode=delete&id=' . $row['id'] . '">[X]</a>';
+            echo '</td></tr>';
 			$i++;
 			$tablebreaker++;
 			
